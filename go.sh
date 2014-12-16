@@ -46,3 +46,7 @@ if [[ $RC != 0 ]]; then
   echo "==> Dying, 'make' failed"
 fi
 make install
+if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
+  mkdir -p "../sixes/$YEAR.$MONTH"
+fi
+cp install/* "../sixes/$YEAR.$MONTH"
