@@ -60,9 +60,10 @@ do
       echo "==> Resetting repo to tags/$YEAR.$MONTH"
       git clean -f -x -d
       git reset --hard "origin/nom"
-      git reset --hard "tags/$YEAR.$MONTH"
+      git fetch "tags/$YEAR.$MONTH"
       RC=$?
       if [[ $RC == 0 ]]; then
+        git reset --hard "tags/$YEAR.$MONTH"
         echo "==> Configuring..."
         perl Configure.pl --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
         RC=$?
