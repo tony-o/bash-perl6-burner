@@ -58,10 +58,11 @@ do
   do
     if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
       echo "==> Resetting repo to tags/$YEAR.$MONTH"
-      git clean -f
+      git clean -f -x -d
+      git reset --hard "origin/nom"
       git reset --hard "tags/$YEAR.$MONTH"
       RC=$?
-      if [[ $RC != 0 ]]; then
+      if [[ $RC == 0 ]]; then
         echo "==> Configuring..."
         perl Configure.pl --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
         RC=$?
@@ -74,11 +75,15 @@ do
           echo "==> Dying, 'make' failed"
         fi
         make install
-        if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
-          mkdir -p "../sixes/$YEAR.$MONTH"
+        RC=$?
+        if [[ $RC != 0 ]]; then
+          mv -r install "../sixes/$YEAR.$MONTH"
         fi
-        cp -r install/* "../sixes/$YEAR.$MONTH"
+      else
+        echo "==> Reset exited $RC, skipping.."
       fi
+    else
+      echo "==> Skipping $YEAR.$MONTH"
     fi
   done
 done
