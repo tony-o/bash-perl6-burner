@@ -50,30 +50,33 @@ cd "p6"
 
 YEAR="2014"
 MONTH="06"
-or year in `seq 2014 2016`;
+for YEAR in `seq 2014 2016`;
 do
-  for month in `seq -f '%02g' 6 12`;
+  for MONTH in `seq -f '%02g' 6 12`;
   do
-    if [ ! -d "$HOME/build/perl6s/$year.$month" ]; then
+    if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
       echo "==> Resetting repo to tags/$YEAR.$MONTH"
       git clean -f
       git reset --hard "tags/$YEAR.$MONTH"
-      echo "==> Configuring..."
-      perl Configure.pl --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
       RC=$?
       if [[ $RC != 0 ]]; then
-        echo "==> Dying, 'config' failed"
+        echo "==> Configuring..."
+        perl Configure.pl --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
+        RC=$?
+        if [[ $RC != 0 ]]; then
+          echo "==> Dying, 'config' failed"
+        fi
+        make
+        RC=$?
+        if [[ $RC != 0 ]]; then
+          echo "==> Dying, 'make' failed"
+        fi
+        make install
+        if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
+          mkdir -p "../sixes/$YEAR.$MONTH"
+        fi
+        cp install/* "../sixes/$YEAR.$MONTH"
       fi
-      make
-      RC=$?
-      if [[ $RC != 0 ]]; then
-        echo "==> Dying, 'make' failed"
-      fi
-      make install
-      if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
-        mkdir -p "../sixes/$YEAR.$MONTH"
-      fi
-      cp install/* "../sixes/$YEAR.$MONTH"
     fi
   done
 done
