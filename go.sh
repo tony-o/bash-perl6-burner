@@ -12,7 +12,9 @@ if [[ "`which pkg`" != "" ]]; then
     PKGS="$PKGS gcc48"
   fi
   COMMAND="sudo pkg update ; sudo pkg install -y"
-  POST="sudo ln -s /usr/local/bin/g++ /usr/local/bin/g++48"
+  if [[ "`which g++`" == "" ]]; then
+    POST="$POST; sudo ln -s /usr/local/bin/g++ /usr/local/bin/g++48"
+  fi
 fi
 if [[ "`which aptitude`" != "" ]]; then
   if [[ "`which git`" == "" ]]; then
@@ -75,7 +77,7 @@ do
         if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
           mkdir -p "../sixes/$YEAR.$MONTH"
         fi
-        cp install/* "../sixes/$YEAR.$MONTH"
+        cp -r install/* "../sixes/$YEAR.$MONTH"
       fi
     fi
   done
