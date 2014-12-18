@@ -60,10 +60,10 @@ do
       echo "==> Resetting repo to tags/$YEAR.$MONTH"
       git clean -f -x -d
       git reset --hard "origin/nom"
-      git fetch "tags/$YEAR.$MONTH"
+      git fetch origin "tags/$YEAR.$MONTH"
+      git reset --hard "tags/$YEAR.$MONTH"
       RC=$?
       if [[ $RC == 0 ]]; then
-        git reset --hard "tags/$YEAR.$MONTH"
         echo "==> Configuring..."
         perl Configure.pl --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
         RC=$?
@@ -78,7 +78,7 @@ do
         make install
         RC=$?
         if [[ $RC != 0 ]]; then
-          mv -r install "../sixes/$YEAR.$MONTH"
+          mv install "../sixes/$YEAR.$MONTH"
         fi
       else
         echo "==> Reset exited $RC, skipping.."
