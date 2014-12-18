@@ -65,7 +65,7 @@ do
       RC=$?
       if [[ $RC == 0 ]]; then
         echo "==> Configuring..."
-        perl Configure.pl --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
+        perl Configure.pl --prefix="../sixes/$YEAR.$MONTH" --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
         RC=$?
         if [[ $RC != 0 ]]; then
           echo "==> Dying, 'config' failed"
@@ -76,10 +76,8 @@ do
           echo "==> Dying, 'make' failed"
         fi
         make install
-        RC=$?
-        if [[ $RC != 0 ]]; then
-          mv install "../sixes/$YEAR.$MONTH"
-        fi
+        mv install "../sixes/$YEAR.$MONTH"
+        exit 0
       else
         echo "==> Reset exited $RC, skipping.."
       fi
