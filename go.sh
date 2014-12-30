@@ -76,8 +76,9 @@ do
           echo "==> Dying, 'make' failed"
         fi
         make install
-        mv install "../sixes/$YEAR.$MONTH"
-        exit 0
+        if [ -f "bin/perl6" ]; then
+          mv install "../sixes/$YEAR.$MONTH"
+        fi
       else
         echo "==> Reset exited $RC, skipping.."
       fi
