@@ -79,10 +79,16 @@ do
           echo "==> Dying, 'make' failed"
         fi
         make install
+        pwd
         if [ -f ./install/bin/perl6 ]; then
-          mv install "../sixes/$YEAR.$MONTH"
+          echo "./install/bin/perl6 exists"
         else
-          echo "SKIPPING INSTALL FOR $YEAR.$MONTH - build failures"
+          echo "./install/bin/perl6 doesn't exist"
+        fi
+        exit 0
+        if [ ! -f "../sixes/$YEAR.$MONTH/bin/perl6 ]; then
+          echo "REMOVING INSTALL FOR $YEAR.$MONTH - build failures"
+          rm -Rf "../sixes/$YEAR.$MONTH"
         fi
       else
         echo "==> Reset exited $RC, skipping.."
