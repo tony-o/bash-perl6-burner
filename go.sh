@@ -78,6 +78,8 @@ do
         make install
         if [ -f "bin/perl6" ]; then
           mv install "../sixes/$YEAR.$MONTH"
+        else
+          echo "SKIPPING INSTALL FOR $YEAR.$MONTH - build failures"
         fi
       else
         echo "==> Reset exited $RC, skipping.."
