@@ -23,6 +23,9 @@ if [[ "`which aptitude`" != "" ]]; then
   if [[ "`which cc`" == "" ]]; then
     PKGS="$PKGS build-essential"
   fi
+  if [[ "`which java`" == "" ]]; then
+    PKGS="$PKGS openjdk-7-jdk"
+  fi
   COMMAND="sudo aptitude update ; sudo aptitude install"
 fi
 
@@ -76,7 +79,7 @@ do
           echo "==> Dying, 'make' failed"
         fi
         make install
-        if [ -f "bin/perl6" ]; then
+        if [ -f "install/bin/perl6" ]; then
           mv install "../sixes/$YEAR.$MONTH"
         else
           echo "SKIPPING INSTALL FOR $YEAR.$MONTH - build failures"
