@@ -61,14 +61,14 @@ do
   do
     if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
       echo "==> Resetting repo to tags/$YEAR.$MONTH"
-      git clean -f -x -d
+      git clean -f
       git reset --hard "origin/nom"
       git fetch origin "tags/$YEAR.$MONTH"
       git reset --hard "tags/$YEAR.$MONTH"
       RC=$?
       if [[ $RC == 0 ]]; then
         echo "==> Configuring..."
-        perl Configure.pl --prefix="../sixes/$YEAR.$MONTH" --gen-moar --gen-nqp --gen-parrot --backends=moar,jvm,parrot
+        perl Configure.pl --prefix="../sixes/$YEAR.$MONTH" --gen-moar --gen-nqp --gen-parrot --backends=all
         RC=$?
         if [[ $RC != 0 ]]; then
           echo "==> Dying, 'config' failed"
@@ -79,7 +79,7 @@ do
           echo "==> Dying, 'make' failed"
         fi
         make install
-        if [ -f "install/bin/perl6" ]; then
+        if [ -f ./install/bin/perl6 ]; then
           mv install "../sixes/$YEAR.$MONTH"
         else
           echo "SKIPPING INSTALL FOR $YEAR.$MONTH - build failures"
