@@ -80,12 +80,6 @@ do
         fi
         make install
         pwd
-        if [ -f ./install/bin/perl6 ]; then
-          echo "./install/bin/perl6 exists"
-        else
-          echo "./install/bin/perl6 doesn't exist"
-        fi
-        exit 0
         if [ ! -f "../sixes/$YEAR.$MONTH/bin/perl6" ]; then
           echo "REMOVING INSTALL FOR $YEAR.$MONTH - build failures"
           rm -Rf "../sixes/$YEAR.$MONTH"
