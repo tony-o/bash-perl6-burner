@@ -86,7 +86,7 @@ do
           echo "./install/bin/perl6 doesn't exist"
         fi
         exit 0
-        if [ ! -f "../sixes/$YEAR.$MONTH/bin/perl6 ]; then
+        if [ ! -f "../sixes/$YEAR.$MONTH/bin/perl6" ]; then
           echo "REMOVING INSTALL FOR $YEAR.$MONTH - build failures"
           rm -Rf "../sixes/$YEAR.$MONTH"
         fi
