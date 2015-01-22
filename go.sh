@@ -55,40 +55,44 @@ cd "p6"
 
 YEAR="2014"
 MONTH="06"
-for YEAR in `seq 2014 2016`;
+for TAG in 2014.12 2015.01
 do
-  for MONTH in `seq -f '%02g' 6 12`;
-  do
-    if [ ! -d "../sixes/$YEAR.$MONTH" ]; then
-      echo "==> Resetting repo to tags/$YEAR.$MONTH"
+  echo "==> Resetting repo to tags/$TAG"
+  git clean -f
+  git reset --hard "origin/nom"
+  git fetch origin "tags/$TAG"
+  git reset --hard "tags/$TAG"
+  git checkout "tags/$TAG"
+  RC=$?
+  if [[ $RC == 0 ]]; then
+    if [ ! -f "../sixes/$TAG/bin/perl6-m" ]; then
       git clean -f
-      git reset --hard "origin/nom"
-      git fetch origin "tags/$YEAR.$MONTH"
-      git reset --hard "tags/$YEAR.$MONTH"
-      RC=$?
-      if [[ $RC == 0 ]]; then
-        echo "==> Configuring..."
-        perl Configure.pl --prefix="../sixes/$YEAR.$MONTH" --gen-moar --gen-nqp --gen-parrot --backends=all
-        RC=$?
-        if [[ $RC != 0 ]]; then
-          echo "==> Dying, 'config' failed"
-        fi
-        make
-        RC=$?
-        if [[ $RC != 0 ]]; then
-          echo "==> Dying, 'make' failed"
-        fi
-        make install
-        pwd
-        if [ ! -f "../sixes/$YEAR.$MONTH/bin/perl6" ]; then
-          echo "REMOVING INSTALL FOR $YEAR.$MONTH - build failures"
-          rm -Rf "../sixes/$YEAR.$MONTH"
-        fi
-      else
-        echo "==> Reset exited $RC, skipping.."
-      fi
-    else
-      echo "==> Skipping $YEAR.$MONTH"
+      perl Configure.pl --prefix="../sixes/$TAG" --gen-moar --gen-nqp --backends=moa && make && make install
     fi
-  done
+    if [ ! -f "../sixes/$TAG/bin/perl6-j" ]; then
+      git clean -f
+      perl Configure.pl --prefix="../sixes/$TAG" --gen-nqp --backends=jvm && make && make install
+    fi
+    if [ ! -f "../sixes/$TAG/bin/perl6-p" ]; then
+      git clean -f
+      perl Configure.pl --prefix="../sixes/$TAG" --gen-parrot --backends=parrot && make && make install
+    fi
+  fi
 done
+
+git clean -f
+git checkout "origin/nom"
+git reset --hard "origin/nom"
+TAG=`date +'%Y.%m.%d'`
+if [ ! -f "../sixes/$TAG/bin/perl6-m" ]; then
+  git clean -f
+  perl Configure.pl --prefix="../sixes/$TAG" --gen-moar --gen-nqp --backends=moa && make && make install
+fi
+if [ ! -f "../sixes/$TAG/bin/perl6-j" ]; then
+  git clean -f
+  perl Configure.pl --prefix="../sixes/$TAG" --gen-nqp --backends=jvm && make && make install
+fi
+if [ ! -f "../sixes/$TAG/bin/perl6-p" ]; then
+  git clean -f
+  perl Configure.pl --prefix="../sixes/$TAG" --gen-parrot --backends=parrot && make && make install
+fi
