@@ -4,6 +4,15 @@ PKGS=""
 COMMAND=""
 POST=""
 
+clean ()
+{
+  git clean -fxd
+  echo 'Removing nqp/'
+  rm -Rf nqp 
+  echo 'Removing parrot/'
+  rm -Rf parrot
+}
+
 if [[ "`which pkg`" != "" ]]; then
   if [[ "`which java`" == "" ]]; then
     PKGS="$PKGS openjdk-7.71.14_1,1" 
@@ -58,7 +67,7 @@ MONTH="06"
 for TAG in 2014.12 2015.01
 do
   echo "==> Resetting repo to tags/$TAG"
-  git clean -f
+  clean  
   git reset --hard "origin/nom"
   git fetch origin "tags/$TAG"
   git reset --hard "tags/$TAG"
@@ -66,33 +75,42 @@ do
   RC=$?
   if [[ $RC == 0 ]]; then
     if [ ! -f "../sixes/$TAG/bin/perl6-m" ]; then
-      git clean -f
+      clean
+      git reset --hard "tags/$TAG"
       perl Configure.pl --prefix="../sixes/$TAG" --gen-moar --gen-nqp --backends=moar && make && make install
     fi
     if [ ! -f "../sixes/$TAG/bin/perl6-j" ]; then
-      git clean -f
+      clean
+      git reset --hard "tags/$TAG"
       perl Configure.pl --prefix="../sixes/$TAG" --gen-nqp --backends=jvm && make && make install
     fi
     if [ ! -f "../sixes/$TAG/bin/perl6-p" ]; then
-      git clean -f
+      clean
+      git reset --hard "tags/$TAG"
       perl Configure.pl --prefix="../sixes/$TAG" --gen-parrot --backends=parrot && make && make install
     fi
   fi
 done
 
-git clean -f
+clean 
 git checkout "origin/nom"
-git reset --hard "origin/nom"
+git reset --hard HEAD
 TAG=`date +'%Y.%m.%d'`
 if [ ! -f "../sixes/$TAG/bin/perl6-m" ]; then
-  git clean -f
-  perl Configure.pl --prefix="../sixes/$TAG" --gen-moar --gen-nqp --backends=moa && make && make install
+  echo 'building moar recent';
+  clean
+  git reset --hard HEAD
+  perl Configure.pl --prefix="../sixes/$TAG" --gen-moar --gen-nqp --backends=moar && make && make install
 fi
 if [ ! -f "../sixes/$TAG/bin/perl6-j" ]; then
-  git clean -f
+  echo 'building java recent'
+  clean
+  git reset --hard HEAD
   perl Configure.pl --prefix="../sixes/$TAG" --gen-nqp --backends=jvm && make && make install
 fi
 if [ ! -f "../sixes/$TAG/bin/perl6-p" ]; then
-  git clean -f
+  echo 'building parrot recent'
+  clean
+  git reset --hard HEAD
   perl Configure.pl --prefix="../sixes/$TAG" --gen-parrot --backends=parrot && make && make install
 fi
