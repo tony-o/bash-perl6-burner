@@ -67,7 +67,7 @@ do
   if [[ $RC == 0 ]]; then
     if [ ! -f "../sixes/$TAG/bin/perl6-m" ]; then
       git clean -f
-      perl Configure.pl --prefix="../sixes/$TAG" --gen-moar --gen-nqp --backends=moa && make && make install
+      perl Configure.pl --prefix="../sixes/$TAG" --gen-moar --gen-nqp --backends=moar && make && make install
     fi
     if [ ! -f "../sixes/$TAG/bin/perl6-j" ]; then
       git clean -f
